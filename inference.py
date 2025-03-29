@@ -21,8 +21,8 @@ MAX_CONCURRENT = int(os.environ.get('MAX_CONCURRENT', 3))
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 class InferenceService:
-    def process_chat(self, message_dict, history):
-        """Process chat message and generate response"""
+    def process_chat(self, message_dict, history, temperature=0.1, top_p=0.95, top_k=40, max_tokens=1000):
+        """Process chat message and generate response with configurable parameters"""
         # Extract text and files
         text = message_dict.get("text", "")
         files = message_dict.get("files", [])
@@ -51,16 +51,16 @@ class InferenceService:
                 print(f"Error opening image: {e}")
         
         try:
-            # Generate response
+            # Generate response with user-specified parameters
             if contents:
                 response = client.models.generate_content(
                     model=DEFAULT_MODEL,
                     contents=contents,
                     config={
-                        "temperature": 0.1,
-                        "top_p": 0.95,
-                        "top_k": 40,
-                        "max_output_tokens": 1000
+                        "temperature": float(temperature),
+                        "top_p": float(top_p),
+                        "top_k": int(top_k),
+                        "max_output_tokens": int(max_tokens)
                     }
                 )
                 

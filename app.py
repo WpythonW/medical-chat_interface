@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-Gradio Interface for Multimodal Chat with Gemini Models
-"""
-
 import os
 import gradio as gr
 from inference import InferenceService, MAX_CONCURRENT, DEFAULT_MODEL
@@ -31,9 +26,46 @@ with gr.Blocks(theme="soft") as demo:
     
     clear_btn = gr.Button("Clear Chat")
     
+    with gr.Accordion("Generation Parameters", open=False):
+        with gr.Row():
+            with gr.Column():
+                temperature = gr.Slider(
+                    minimum=0.0, 
+                    maximum=1.0, 
+                    value=0.1, 
+                    step=0.05, 
+                    label="Temperature", 
+                    info="Higher values make output more random, lower values more deterministic"
+                )
+                top_p = gr.Slider(
+                    minimum=0.0, 
+                    maximum=1.0, 
+                    value=0.95, 
+                    step=0.05, 
+                    label="Top-p", 
+                    info="Nucleus sampling: consider tokens with top_p probability mass"
+                )
+            with gr.Column():
+                top_k = gr.Slider(
+                    minimum=1, 
+                    maximum=100, 
+                    value=40, 
+                    step=1, 
+                    label="Top-k", 
+                    info="Consider only top k tokens for each generation step"
+                )
+                max_tokens = gr.Slider(
+                    minimum=100, 
+                    maximum=2000, 
+                    value=1000, 
+                    step=100, 
+                    label="Max Tokens", 
+                    info="Maximum number of tokens to generate"
+                )
+    
     submit_event = textbox.submit(
         fn=inference_service.process_chat,
-        inputs=[textbox, chatbot],
+        inputs=[textbox, chatbot, temperature, top_p, top_k, max_tokens],
         outputs=chatbot,
     ).then(
         fn=lambda: {"text": "", "files": []},
