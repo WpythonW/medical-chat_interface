@@ -16,9 +16,9 @@ with gr.Blocks(theme="soft") as demo:
     
     chatbot = gr.Chatbot(
         label="Conversation",
-        avatar_images=("👤", "🤖"),
         height=500,
         type="messages"  # Fix for the warning
+        # Аватарки отключены
     )
     
     with gr.Row():
@@ -28,19 +28,8 @@ with gr.Blocks(theme="soft") as demo:
             placeholder="Type your message here and/or upload images...",
             scale=9
         )
-        submit_btn = gr.Button("Send", size="sm", scale=1)
     
     clear_btn = gr.Button("Clear Chat")
-    
-    # Set up event handlers
-    submit_click = submit_btn.click(
-        fn=inference_service.process_chat,
-        inputs=[textbox, chatbot],
-        outputs=chatbot,
-    ).then(
-        fn=lambda: {"text": "", "files": []},
-        outputs=textbox
-    )
     
     submit_event = textbox.submit(
         fn=inference_service.process_chat,
@@ -53,23 +42,17 @@ with gr.Blocks(theme="soft") as demo:
     
     clear_btn.click(fn=lambda: [], outputs=chatbot)
     
-    # Add example images if they exist
-    examples = []
-    example_images = {
-        "dog_pic.jpg": "What breed is this?",
-        "newspaper.png": "Extract all information from this document."
-    }
-    
-    for img_name, prompt_text in example_images.items():
-        img_path = os.path.join(os.path.dirname(__file__), img_name)
-        if os.path.exists(img_path):
-            examples.append([{"text": prompt_text, "files": [img_path]}])
-    
-    if examples:
-        gr.Examples(examples=examples, inputs=textbox)
-    
-    # Display model info
-    gr.Markdown(f"### Using Gemini model: {DEFAULT_MODEL}")
+    # Add examples directly
+    gr.Examples(
+        examples=[
+            [{"text": "What breed is this dog?", "files": ["examples/dog_pic.jpg"]}],
+            [{"text": "Analyze this chest X-ray", "files": ["examples/xray.jpg"]}],
+            [{"text": "What medical condition is shown here?", "files": ["examples/medical.jpg"]}],
+            [{"text": "Describe what you see in this scan", "files": ["examples/scan.jpg"]}],
+            [{"text": "Identify the pathology in this image", "files": ["examples/pathology.jpg"]}]
+        ],
+        inputs=textbox
+    )
 
 # Launch the interface
 demo.queue(default_concurrency_limit=MAX_CONCURRENT)
