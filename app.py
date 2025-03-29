@@ -45,11 +45,13 @@ with gr.Blocks(theme="soft") as demo:
     # Add examples directly
     gr.Examples(
         examples=[
-            [{"text": "What breed is this dog?", "files": ["examples/dog_pic.jpg"]}],
-            [{"text": "Analyze this chest X-ray", "files": ["examples/xray.jpg"]}],
-            [{"text": "What medical condition is shown here?", "files": ["examples/medical.jpg"]}],
-            [{"text": "Describe what you see in this scan", "files": ["examples/scan.jpg"]}],
-            [{"text": "Identify the pathology in this image", "files": ["examples/pathology.jpg"]}]
+            [{"text": "What type of tissue is shown in the image?", "files": ["images/type_of_tissue.png"]}],
+            [{"text": "What type of CT scans are shown in the image?", "files": ["images/CT.png"]}],
+            [{"text": "What type of imaging technique is used in this figure?", "files": ["images/brain.png"]}],
+            [{"text": "What organ is shown in the image?", "files": ["images/organ.png"]}],
+            [{"text": "What is the relationship between the MRI derived α value and the fractional area of fat vacuoles in the histological section?", "files": ["images/histology.png"]}],
+            [{"text": "What does the chest X-ray show?", "files": ["images/XRay.png"]}],
+            [{"text": "What is the size of the specimen?", "files": ["images/gross.png"]}],
         ],
         inputs=textbox
     )
